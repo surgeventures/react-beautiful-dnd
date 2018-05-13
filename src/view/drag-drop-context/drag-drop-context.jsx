@@ -152,6 +152,7 @@ export default class DragDropContext extends React.Component<Props> {
       // We recreate the Hook object so that consumers can pass in new
       // hook props at any time (eg if they are using arrow functions)
       const hooks: Hooks = {
+        beforeSnapshot: this.props.beforeSnapshot,
         onDragStart: this.props.onDragStart,
         onDragEnd: this.props.onDragEnd,
         onDragUpdate: this.props.onDragUpdate,

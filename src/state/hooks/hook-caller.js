@@ -205,9 +205,22 @@ export default (announce: Announce): HookCaller => {
   };
 
   const onStateChange = (hooks: Hooks, previous: AppState, current: AppState): void => {
-    const { onDragStart, onDragUpdate, onDragEnd } = hooks;
+    const { beforeSnapshot, onDragStart, onDragUpdate, onDragEnd } = hooks;
     const currentPhase = current.phase;
     const previousPhase = previous.phase;
+
+    if (currentPhase === 'PREPARING' && previousPhase !== 'PREPARING') {
+      withTimings('hook:beforeSnapshot', () => {
+        if (beforeSnapshot) {
+          const managed: Announce = getAnnouncerForConsumer(announce);
+          const provided: HookProvided = {
+            announce: managed,
+          };
+
+          beforeSnapshot(provided);
+        }
+      });
+    }
 
     // Dragging in progress
     if (currentPhase === 'DRAGGING' && previousPhase === 'DRAGGING') {
@@ -315,4 +328,3 @@ export default (announce: Announce): HookCaller => {
 
   return caller;
 };
-
