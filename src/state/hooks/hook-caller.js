@@ -203,16 +203,14 @@ export default (announce: Announce): HookCaller => {
     const previousPhase = previous.phase;
 
     if (currentPhase === 'PREPARING' && previousPhase !== 'PREPARING') {
-      withTimings('hook:beforeSnapshot', () => {
-        if (beforeSnapshot) {
-          const managed: Announce = getAnnouncerForConsumer(announce);
-          const provided: HookProvided = {
-            announce: managed,
-          };
+      if (beforeSnapshot) {
+        const managed: Announce = getAnnouncerForConsumer(announce);
+        const provided: HookProvided = {
+          announce: managed,
+        };
 
-          beforeSnapshot(provided);
-        }
-      });
+        beforeSnapshot(provided);
+      }
     }
 
     // Dragging in progress

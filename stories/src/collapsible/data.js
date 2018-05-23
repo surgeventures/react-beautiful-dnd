@@ -78,6 +78,29 @@ const categories: Category[] = [
       },
     ],
   },
+  {
+    id: '5',
+    name: 'Foobars',
+    subcategories: [],
+  },
+  {
+    id: '6',
+    name: 'Tacos',
+    subcategories: [
+      {
+        id: '1',
+        name: 'Taco',
+      },
+      {
+        id: '2',
+        name: 'Burrito',
+      },
+      {
+        id: '3',
+        name: 'Quesadilla',
+      },
+    ],
+  },
 ];
 
 export default categories;

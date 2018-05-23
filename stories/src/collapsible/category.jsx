@@ -62,27 +62,30 @@ export default class Category extends Component<Props> {
     return (
       <Draggable draggableId={category.id} index={index}>
         {(provided: DraggableProvided, snapshot: DraggableStateSnapshot) => (
-          <Container
-            innerRef={provided.innerRef}
-            isDragging={snapshot.isDragging}
-            {...provided.draggableProps}
-          >
-            <Header>
-              {this.props.category.name}
+          <div>
+            <Container
+              innerRef={provided.innerRef}
+              isDragging={snapshot.isDragging}
+              {...provided.draggableProps}
+            >
+              <Header>
+                {this.props.category.name}
 
-              <DragHandle {...provided.dragHandleProps}>
-                <Line />
-                <Line />
-                <Line />
-              </DragHandle>
-            </Header>
+                <DragHandle {...provided.dragHandleProps}>
+                  <Line/>
+                  <Line/>
+                  <Line/>
+                </DragHandle>
+              </Header>
 
-            <List isCollapsed={isCollapsed}>
-              {category.subcategories.map((subcategory: SubCategoryType) => (
-                <SubCategory key={subcategory.id}>{subcategory.name}</SubCategory>
-              ))}
-            </List>
-          </Container>
+              <List isCollapsed={isCollapsed}>
+                {category.subcategories.map((subcategory: SubCategoryType) => (
+                  <SubCategory key={subcategory.id}>{subcategory.name}</SubCategory>
+                ))}
+              </List>
+            </Container>
+            {provided.placeholder}
+          </div>
         )}
       </Draggable>
     );
