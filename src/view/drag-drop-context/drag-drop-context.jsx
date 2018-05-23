@@ -29,6 +29,7 @@ import type {
 } from '../../types';
 import type {
   HookCaller,
+  Callbacks as HookCallerCallbacks,
 } from '../../state/hooks/hooks-types';
 import {
   storeKey,
@@ -44,6 +45,7 @@ import {
   updateDroppableDimensionScroll,
   updateDroppableDimensionIsEnabled,
   bulkPublishDimensions,
+  queueUpdateDimensions,
 } from '../../state/action-creators';
 
 type Props = {|
@@ -107,8 +109,13 @@ export default class DragDropContext extends React.Component<Props> {
 
     this.announcer = createAnnouncer();
 
+    const hookCallbacks: HookCallerCallbacks = {
+      queueUpdateDimensions: () => {
+        this.store.dispatch(queueUpdateDimensions());
+      },
+    };
     // create the hook caller
-    this.hookCaller = createHookCaller(this.announcer.announce);
+    this.hookCaller = createHookCaller(this.announcer.announce, hookCallbacks);
 
     // create the style marshal
     this.styleMarshal = createStyleMarshal();

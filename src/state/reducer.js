@@ -47,6 +47,7 @@ const clean = memoizeOne((phase?: Phase = 'IDLE'): State => ({
   drag: null,
   drop: null,
   dimension: noDimensions,
+  updateDimensions: false,
 }));
 
 type MoveArgs = {|
@@ -370,6 +371,13 @@ export default (state: State = clean('IDLE'), action: Action): State => {
         impact,
         scrollJumpRequest: null,
       },
+    };
+  }
+
+  if (action.type === 'QUEUE_UPDATE_DIMENSIONS') {
+    return {
+      ...state,
+      updateDimensions: true,
     };
   }
 

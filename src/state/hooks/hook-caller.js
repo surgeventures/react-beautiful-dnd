@@ -1,6 +1,6 @@
 // @flow
 import messagePreset from './message-preset';
-import type { HookCaller } from './hooks-types';
+import type { Callbacks, HookCaller } from './hooks-types';
 import type {
   Announce,
   Hooks,
@@ -86,7 +86,7 @@ const getAnnouncerForConsumer = (announce: Announce) => {
   return result;
 };
 
-export default (announce: Announce): HookCaller => {
+export default (announce: Announce, callbacks: Callbacks): HookCaller => {
   let state: State = notDragging;
 
   const setState = (partial: Object): void => {
@@ -131,7 +131,7 @@ export default (announce: Announce): HookCaller => {
     // if no hook: announce the default message
     if (!hook) {
       announce(getDefaultMessage(data));
-      return;
+      return null;
     }
 
     const managed: Announce = getAnnouncerForConsumer(announce);
@@ -139,11 +139,13 @@ export default (announce: Announce): HookCaller => {
       announce: managed,
     };
 
-    hook((data: any), provided);
+    const res = hook((data: any), provided);
 
     if (!managed.wasCalled()) {
       announce(getDefaultMessage(data));
     }
+
+    return res;
   };
 
   const onDrag = (current: AppState, onDragUpdate: ?OnDragUpdateHook) => {
@@ -246,7 +248,12 @@ export default (announce: Announce): HookCaller => {
       });
 
       // onDragStart is optional
-      execute(onDragStart, start, messagePreset.onDragStart);
+      const res = execute(onDragStart, start, messagePreset.onDragStart);
+      if (res && typeof res.then === 'function') {
+        res.then(() => {
+          callbacks.queueUpdateDimensions();
+        });
+      }
       return;
     }
 

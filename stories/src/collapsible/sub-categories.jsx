@@ -38,7 +38,14 @@ export default class SubCategories extends Component<*, State> {
   // in?
   onDragStart = (start: DragStart): void => {
     publishOnDragStart(start);
-  }
+    return new Promise((resolve) => {
+      this.setState({
+        isCollapsed: true,
+      }, () => {
+        resolve();
+      });
+    });
+  };
 
   onDragEnd = (result: DropResult): void => {
     publishOnDragEnd(result);
@@ -60,8 +67,7 @@ export default class SubCategories extends Component<*, State> {
   }
 
   beforeSnapshot = (): void => {
-    publishBeforeSnapshot(null);
-    this.setState({ isCollapsed: true });
+    publishBeforeSnapshot();
   }
 
   render() {

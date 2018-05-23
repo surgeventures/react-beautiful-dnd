@@ -7,3 +7,7 @@ import type {
 export type HookCaller = {|
   onStateChange: (hooks: Hooks, previous: State, current: State) => void,
 |}
+
+export type Callbacks = {
+  queueUpdateDimensions: () => void,
+};
