@@ -10,7 +10,6 @@ import { colors, grid, borderRadius } from '../constants';
 type Props = {|
   categories: CategoryType[],
   title: string,
-  isCollapsed: boolean,
 |}
 
 const Container = styled.div`
@@ -33,8 +32,6 @@ const List = styled.div`
 
 export default class CategoryList extends Component<Props> {
   render() {
-    const isCollapsed = this.props.isCollapsed;
-
     return (
       <Droppable droppableId="list">
         {(provided: DroppableProvided) => (
@@ -49,7 +46,6 @@ export default class CategoryList extends Component<Props> {
                   key={category.id}
                   category={category}
                   index={index}
-                  isCollapsed={isCollapsed}
                 />
               ))}
             </List>

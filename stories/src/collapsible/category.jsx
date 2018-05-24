@@ -9,7 +9,6 @@ import { colors, grid, borderRadius } from '../constants';
 type Props = {|
   category: CategoryType,
   index: number,
-  isCollapsed: boolean,
 |}
 
 const Container = styled.div`
@@ -44,9 +43,9 @@ const Line = styled.div`
   background-color: ${colors.grey.darker};
 `;
 
-const List = styled.ul`
+export const List = styled.ul`
   background: ${colors.grey.medium};
-  display: ${props => (props.isCollapsed ? 'none' : 'block')};
+  display: block;
 `;
 
 const SubCategory = styled.li`
@@ -57,7 +56,6 @@ export default class Category extends Component<Props> {
   render() {
     const category: CategoryType = this.props.category;
     const index: number = this.props.index;
-    const isCollapsed: boolean = this.props.isCollapsed;
 
     return (
       <Draggable draggableId={category.id} index={index}>
@@ -72,13 +70,13 @@ export default class Category extends Component<Props> {
                 {this.props.category.name}
 
                 <DragHandle {...provided.dragHandleProps}>
-                  <Line/>
-                  <Line/>
-                  <Line/>
+                  <Line />
+                  <Line />
+                  <Line />
                 </DragHandle>
               </Header>
 
-              <List isCollapsed={isCollapsed}>
+              <List>
                 {category.subcategories.map((subcategory: SubCategoryType) => (
                   <SubCategory key={subcategory.id}>{subcategory.name}</SubCategory>
                 ))}

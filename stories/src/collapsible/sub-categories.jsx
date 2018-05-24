@@ -12,44 +12,49 @@ import type {
   DraggableLocation,
 } from '../../../src/';
 import type { Category } from './types';
+import { List } from './category';
 
 type State = {|
   categories: Category[],
-  isCollapsed: boolean,
 |}
 
 const publishBeforeSnapshot = action('beforeSnapshot');
 const publishOnDragStart = action('onDragStart');
 const publishOnDragEnd = action('onDragEnd');
 
+const collapsedClassName = 'collapsed';
+
 const Container = styled.div`
   padding-top: 20vh;
   display: flex;
   flex-direction: column;
   align-items: center;
+  
+  &.${collapsedClassName} {
+    
+    & ${List} {
+      display: none;
+    }
+  }
 `;
 
 export default class SubCategories extends Component<*, State> {
   state: State = {
     categories: initial,
-    isCollapsed: false,
   }
 
   // in?
   onDragStart = (start: DragStart): void => {
     publishOnDragStart(start);
-    return new Promise((resolve) => {
-      this.setState({
-        isCollapsed: true,
-      }, () => {
-        resolve();
-      });
-    });
+    /*
+    this.container.classList.add(collapsedClassName);
+    */
   };
 
   onDragEnd = (result: DropResult): void => {
     publishOnDragEnd(result);
-    this.setState({ isCollapsed: false });
+
+    this.container.classList.remove(collapsedClassName);
 
     if (result.reason === 'CANCEL') { return; }
     const destination: ?DraggableLocation = result.destination;
@@ -68,22 +73,25 @@ export default class SubCategories extends Component<*, State> {
 
   beforeSnapshot = (): void => {
     publishBeforeSnapshot();
+
+    this.container.classList.add(collapsedClassName);
+  }
+
+  setRef = (ref) => {
+    this.container = ref;
   }
 
   render() {
-    const isCollapsed = this.state.isCollapsed;
-
     return (
       <DragDropContext
         beforeSnapshot={this.beforeSnapshot}
         onDragStart={this.onDragStart}
         onDragEnd={this.onDragEnd}
       >
-        <Container>
+        <Container innerRef={this.setRef}>
           <CategoryList
             title="Categories"
             categories={this.state.categories}
-            isCollapsed={isCollapsed}
           />
         </Container>
       </DragDropContext>
