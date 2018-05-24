@@ -29,7 +29,6 @@ import type {
 } from '../../types';
 import type {
   HookCaller,
-  Callbacks as HookCallerCallbacks,
 } from '../../state/hooks/hooks-types';
 import {
   storeKey,
@@ -45,8 +44,6 @@ import {
   updateDroppableDimensionScroll,
   updateDroppableDimensionIsEnabled,
   bulkPublishDimensions,
-  setUpdateDimensions,
-  resetUpdateDimensions,
 } from '../../state/action-creators';
 
 type Props = {|
@@ -110,13 +107,8 @@ export default class DragDropContext extends React.Component<Props> {
 
     this.announcer = createAnnouncer();
 
-    const hookCallbacks: HookCallerCallbacks = {
-      queueUpdateDimensions: () => {
-        this.store.dispatch(setUpdateDimensions);
-      },
-    };
     // create the hook caller
-    this.hookCaller = createHookCaller(this.announcer.announce, hookCallbacks);
+    this.hookCaller = createHookCaller(this.announcer.announce);
 
     // create the style marshal
     this.styleMarshal = createStyleMarshal();
@@ -140,9 +132,6 @@ export default class DragDropContext extends React.Component<Props> {
       },
       updateDroppableIsEnabled: (id: DroppableId, isEnabled: boolean) => {
         this.store.dispatch(updateDroppableDimensionIsEnabled(id, isEnabled));
-      },
-      resetUpdateDimensions: () => {
-        this.store.dispatch(resetUpdateDimensions);
       },
     };
     this.dimensionMarshal = createDimensionMarshal(callbacks);
@@ -188,10 +177,6 @@ export default class DragDropContext extends React.Component<Props> {
       // changes after the reorder in onDragEnd
       if (isDragEnding) {
         this.dimensionMarshal.onPhaseChange(current);
-      }
-
-      if (current.updateDimensions && !isPhaseChanging && !isDragEnding) {
-        this.dimensionMarshal.updateDimensions(current);
       }
 
       // We recreate the Hook object so that consumers can pass in new

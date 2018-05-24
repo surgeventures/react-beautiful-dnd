@@ -47,7 +47,6 @@ const clean = memoizeOne((phase?: Phase = 'IDLE'): State => ({
   drag: null,
   drop: null,
   dimension: noDimensions,
-  updateDimensions: false,
 }));
 
 type MoveArgs = {|
@@ -162,11 +161,6 @@ const updateStateAfterDimensionChange = (newState: State, impact?: ?DragImpact):
     impact,
   });
 };
-
-const setUpdateDimensions = (state, update = true) => ({
-  ...state,
-  updateDimensions: update,
-});
 
 export default (state: State = clean('IDLE'), action: Action): State => {
   if (action.type === 'CLEAN') {
@@ -377,14 +371,6 @@ export default (state: State = clean('IDLE'), action: Action): State => {
         scrollJumpRequest: null,
       },
     };
-  }
-
-  if (action.type === 'QUEUE_UPDATE_DIMENSIONS') {
-    return setUpdateDimensions(state);
-  }
-
-  if (action.type === 'RESET_UPDATE_DIMENSIONS') {
-    return setUpdateDimensions(state, false);
   }
 
   if (action.type === 'UPDATE_DROPPABLE_DIMENSION_SCROLL') {
