@@ -48,6 +48,7 @@ export default class Draggable extends Component<Props, State> {
   /* eslint-disable react/sort-comp */
   callbacks: DragHandleCallbacks
   styleContext: string
+  startingTop: number
 
   state: State = {
     ref: null,
@@ -95,6 +96,7 @@ export default class Draggable extends Component<Props, State> {
       return;
     }
 
+    this.startingTop = undefined;
     this.props.dropAnimationFinished();
   }
 
@@ -108,6 +110,9 @@ export default class Draggable extends Component<Props, State> {
     if (!ref) {
       throw new Error('cannot lift at this time');
     }
+
+    // only top is changed after collapse
+    this.startingTop = ref.getBoundingClientRect().top;
 
     const initial: InitialDragPositions = {
       selection: client,
@@ -207,7 +212,7 @@ export default class Draggable extends Component<Props, State> {
         zIndex: isDropAnimating ? zIndexOptions.dropAnimating : zIndexOptions.dragging,
         width,
         height,
-        top,
+        top: this.startingTop,
         left,
         margin: 0,
         pointerEvents: 'none',
