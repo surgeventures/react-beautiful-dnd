@@ -519,14 +519,13 @@ export const lift = (id: DraggableId,
   });
 };
 
-const setUpdateDimensions = {
+export const setUpdateDimensions = {
   type: 'QUEUE_UPDATE_DIMENSIONS',
 };
 
-export const queueUpdateDimensions = () =>
-  (dispatch: Dispatch) => {
-    dispatch(setUpdateDimensions);
-  };
+export const resetUpdateDimensions = {
+  type: 'RESET_UPDATE_DIMENSIONS',
+};
 
 export type Action =
   CompleteLiftAction |

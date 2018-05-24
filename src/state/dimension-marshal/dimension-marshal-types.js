@@ -63,6 +63,7 @@ export type DimensionMarshal = {|
   unregisterDroppable: (descriptor: DroppableDescriptor) => void,
   // Entry
   onPhaseChange: (current: State) => void,
+  updateDimensions: (current: State) => void,
 |}
 
 export type Callbacks = {|
@@ -75,4 +76,5 @@ export type Callbacks = {|
   ) => void,
   updateDroppableScroll: (id: DroppableId, newScroll: Position) => void,
   updateDroppableIsEnabled: (id: DroppableId, isEnabled: boolean) => void,
+  resetUpdateDimensions: () => void,
 |}

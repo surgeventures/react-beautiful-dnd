@@ -163,6 +163,11 @@ const updateStateAfterDimensionChange = (newState: State, impact?: ?DragImpact):
   });
 };
 
+const setUpdateDimensions = (state, update = true) => ({
+  ...state,
+  updateDimensions: update,
+});
+
 export default (state: State = clean('IDLE'), action: Action): State => {
   if (action.type === 'CLEAN') {
     return clean();
@@ -375,10 +380,11 @@ export default (state: State = clean('IDLE'), action: Action): State => {
   }
 
   if (action.type === 'QUEUE_UPDATE_DIMENSIONS') {
-    return {
-      ...state,
-      updateDimensions: true,
-    };
+    return setUpdateDimensions(state);
+  }
+
+  if (action.type === 'RESET_UPDATE_DIMENSIONS') {
+    return setUpdateDimensions(state, false);
   }
 
   if (action.type === 'UPDATE_DROPPABLE_DIMENSION_SCROLL') {

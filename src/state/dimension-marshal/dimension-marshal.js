@@ -290,6 +290,23 @@ export default (callbacks: Callbacks) => {
     return toBeCollected;
   };
 
+  const updatePrimaryDimensions = (request: ?LiftRequest) => {
+    const draggableId: DraggableId = request.draggableId;
+
+    const draggables: DraggableEntryMap = state.draggables;
+    const droppables: DroppableEntryMap = state.droppables;
+    const draggableEntry: ?DraggableEntry = draggables[draggableId];
+
+    const homeEntry: ?DroppableEntry = droppables[draggableEntry.descriptor.droppableId];
+
+    // Get the minimum dimensions to start a drag
+    const home: DroppableDimension = homeEntry.callbacks.getDimension();
+    const draggable: DraggableDimension = draggableEntry.getDimension();
+    // Publishing dimensions
+    callbacks.publishDroppable(home);
+    callbacks.publishDraggable(draggable);
+  };
+
   const processPrimaryDimensions = (request: ?LiftRequest) => {
     if (state.isCollecting) {
       cancel('Cannot start capturing dimensions for a drag it is already dragging');
@@ -433,6 +450,12 @@ export default (callbacks: Callbacks) => {
     });
   };
 
+  const updateDimensions = (current: AppState) => {
+    // reset updateDimensions flag first, so there are no subsequent calls
+    callbacks.resetUpdateDimensions();
+    updatePrimaryDimensions(current.dimension.request);
+  };
+
   const onPhaseChange = (current: AppState) => {
     const phase: Phase = current.phase;
 
@@ -471,6 +494,7 @@ export default (callbacks: Callbacks) => {
     scrollDroppable,
     updateDroppableScroll,
     onPhaseChange,
+    updateDimensions,
   };
 
   return marshal;
