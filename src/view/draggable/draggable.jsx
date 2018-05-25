@@ -49,6 +49,7 @@ export default class Draggable extends Component<Props, State> {
   callbacks: DragHandleCallbacks
   styleContext: string
   startingTop: number
+  topDiff: number
 
   state: State = {
     ref: null,
@@ -97,6 +98,7 @@ export default class Draggable extends Component<Props, State> {
     }
 
     this.startingTop = undefined;
+    this.topDiff = undefined;
     this.props.dropAnimationFinished();
   }
 
@@ -204,7 +206,11 @@ export default class Draggable extends Component<Props, State> {
     (dimension: DraggableDimension,
       isDropAnimating: boolean,
       movementStyle: MovementStyle): DraggingStyle => {
-      const { width, height, top, left } = dimension.client.paddingBox;
+      const { width, height, top: newTop, left } = dimension.client.paddingBox;
+      // save topDiff value for later correction
+      if (this.topDiff == null) {
+        this.topDiff = this.startingTop - newTop;
+      }
       // For an explanation of properties see `draggable-types`.
       const style: DraggingStyle = {
         position: 'fixed',
@@ -329,6 +335,7 @@ export default class Draggable extends Component<Props, State> {
         <Moveable
           speed={speed}
           destination={offset}
+          topDiff={this.topDiff}
           onMoveEnd={this.onMoveEnd}
         >
           {(movementStyle: MovementStyle) => (

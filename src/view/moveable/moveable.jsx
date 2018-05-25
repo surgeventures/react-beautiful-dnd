@@ -69,11 +69,13 @@ export default class Movable extends Component<Props> {
       return destination;
     }
 
+    // this part is invoked once to animate drop
+    const topDiff = this.props.topDiff;
     const selected = speed === 'FAST' ? physics.fast : physics.standard;
 
     return {
       x: spring(destination.x, selected),
-      y: spring(destination.y, selected),
+      y: spring(destination.y - topDiff, selected),
     };
   }
 
